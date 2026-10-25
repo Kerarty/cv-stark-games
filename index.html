@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ярослав Кукар — геймдизайнер · Испытание для Stark Games</title>
+<meta name="description" content="Интерактивное резюме геймдизайнера в мире игр Stark Games: Грани Реальности, Tile Seasons, Ёлочка.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#hub" data-i18n="skip"></a>
+
+<header class="hud" id="hud">
+  <div class="hud__who">
+    <span class="hud__name" data-i18n="hud.name"></span>
+    <span class="hud__role" data-i18n="hud.role"></span>
+  </div>
+  <div class="hud__progress" id="hudProgress" role="status" aria-live="polite"></div>
+  <div class="hud__controls">
+    <button class="hud-btn" id="designerToggle" type="button" aria-pressed="false">
+      <span aria-hidden="true">✦</span> <span data-i18n="hud.designer"></span>
+    </button>
+    <button class="hud-btn" id="langToggle" type="button" aria-label="Switch language">EN</button>
+    <a class="hud-btn hud-btn--gold" href="assets/Yaroslav_Kukar_CV.pdf" target="_blank" rel="noopener">PDF</a>
+  </div>
+</header>
+
+<main>
+  <!-- Хаб -->
+  <section class="world world--hub" id="hub" aria-labelledby="hubTitle">
+    <div class="hub__inner container">
+      <p class="hub__kicker" data-i18n="hub.kicker"></p>
+      <h1 class="hub__title" id="hubTitle" data-i18n="hub.title"></h1>
+      <p class="hub__subtitle" data-i18n="hub.subtitle"></p>
+      <ul class="hub__facts">
+        <li data-i18n="hub.fact1"></li>
+        <li data-i18n="hub.fact2"></li>
+        <li data-i18n="hub.fact3"></li>
+      </ul>
+      <div class="worlds" id="worldCards"></div>
+      <a class="btn btn--ghost" href="assets/Yaroslav_Kukar_CV.pdf" target="_blank" rel="noopener" data-i18n="hub.plain"></a>
+    </div>
+  </section>
+
+  <!-- Мир 1: Грани Реальности -->
+  <section class="world world--ereality" id="ereality" aria-labelledby="erealityTitle" tabindex="-1">
+    <div class="container">
+      <header class="world__head">
+        <p class="world__kicker" data-i18n="w1.kicker"></p>
+        <h2 class="world__title" id="erealityTitle" data-i18n="w1.title"></h2>
+        <p class="world__lead" data-i18n="w1.lead"></p>
+      </header>
+      <div class="sheet">
+        <div class="sheet__id">
+          <div class="avatar" aria-hidden="true">ГД</div>
+          <div>
+            <h3 class="sheet__class" data-i18n="w1.className"></h3>
+            <p class="sheet__level" data-i18n="w1.level"></p>
+          </div>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="quests" id="quests"></div>
+        <h3 class="sheet__subtitle" data-i18n="w1.achvTitle"></h3>
+        <div class="achievements" id="achievements"></div>
+      </div>
+      <aside class="why" data-why hidden></aside>
+    </div>
+  </section>
+
+  <!-- Мир 2: Tile Seasons -->
+  <section class="world world--tiles" id="tiles" aria-labelledby="tilesTitle" tabindex="-1">
+    <div class="container">
+      <header class="world__head">
+        <p class="world__kicker" data-i18n="w2.kicker"></p>
+        <h2 class="world__title" id="tilesTitle" data-i18n="w2.title"></h2>
+        <p class="world__lead" data-i18n="w2.lead"></p>
+      </header>
+      <div class="matchlab">
+        <div class="board-wrap">
+          <div class="board" id="matchBoard" role="application" aria-label="Match-3"></div>
+          <p class="board__hint" data-i18n="w2.hint"></p>
+        </div>
+        <div class="chest">
+          <h3 class="chest__title" data-i18n="w2.chestTitle"></h3>
+          <div class="chest__cards" id="toolCards"></div>
+        </div>
+      </div>
+      <aside class="why" data-why hidden></aside>
+    </div>
+  </section>
+
+  <!-- Мир 3: Ёлочка -->
+  <section class="world world--tree" id="tree" aria-labelledby="treeTitle" tabindex="-1">
+    <div class="container">
+      <header class="world__head">
+        <p class="world__kicker" data-i18n="w3.kicker"></p>
+        <h2 class="world__title" id="treeTitle" data-i18n="w3.title"></h2>
+        <p class="world__lead" data-i18n="w3.lead"></p>
+      </header>
+      <div class="finale">
+        <div class="tree-wrap">
+          <div class="star" id="treeStar" aria-hidden="true">★</div>
+          <div class="tree" aria-hidden="true">
+            <span class="tree__layer tree__layer--1"></span>
+            <span class="tree__layer tree__layer--2"></span>
+            <span class="tree__layer tree__layer--3"></span>
+            <span class="tree__trunk"></span>
+          </div>
+          <div class="ornaments" id="ornaments"></div>
+        </div>
+        <div class="postcard">
+          <button class="postcard__front" id="postcardBtn" type="button" aria-expanded="false">
+            <span data-i18n="w3.cardTitle"></span>
+            <span class="postcard__hint" data-i18n="w3.cardHint"></span>
+          </button>
+          <div class="postcard__body" id="postcardBody" hidden>
+            <p data-i18n="w3.cardText"></p>
+          </div>
+        </div>
+      </div>
+      <div class="guild">
+        <a class="btn btn--gold btn--big" id="guildMail" href="mailto:hr@stark.games" data-i18n="w3.cta"></a>
+        <p class="guild__note" data-i18n="w3.ctaNote"></p>
+      </div>
+      <aside class="why" data-why hidden></aside>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p><span data-i18n="footer.made"></span> · <a href="https://github.com/Kerarty" target="_blank" rel="noopener">github.com/Kerarty</a> · <a href="assets/Yaroslav_Kukar_CV.pdf" target="_blank" rel="noopener" data-i18n="footer.pdf"></a></p>
+</footer>
+
+<script src="content.js"></script>
+<script src="games.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

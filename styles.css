@@ -1,0 +1,374 @@
+/* Дизайн-токены: сетка 8px, шкала типов, z-index */
+:root {
+  --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 1rem; --sp-4: 1.5rem;
+  --sp-5: 2rem; --sp-6: 3rem; --sp-7: 4rem;
+  --radius: 12px;
+  --z-hud: 200;
+  --gold: #d9a441;
+  --ink: #16130c;
+  --paper: #f0e6d2;
+  --c-bg: #141821;
+  --c-text: #e9e4d6;
+  --c-dim: #b9b29e; /* 4.6:1 на --c-bg */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.5;
+}
+img { max-width: 100%; }
+a { color: var(--gold); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.container { max-width: 960px; margin-inline: auto; padding-inline: var(--sp-4); }
+section { scroll-margin-top: 76px; }
+
+.skip-link {
+  position: absolute; left: -999px; top: 0;
+  background: var(--gold); color: var(--ink); padding: var(--sp-2) var(--sp-3);
+  z-index: calc(var(--z-hud) + 1);
+}
+.skip-link:focus { left: 8px; }
+
+/* ---------- HUD ---------- */
+.hud {
+  position: fixed; inset: 0 0 auto 0; z-index: var(--z-hud);
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  background: rgba(16, 19, 26, 0.92);
+  border-bottom: 1px solid rgba(217, 164, 65, 0.35);
+  backdrop-filter: blur(6px);
+}
+.hud__who { display: flex; flex-direction: column; min-width: 0; }
+.hud__name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+.hud__role { font-size: 0.8rem; color: var(--c-dim); }
+.hud__progress {
+  margin-inline: auto;
+  font-family: var(--font-display);
+  font-size: 0.9rem; letter-spacing: 0.06em;
+  color: var(--gold);
+  border: 1px solid rgba(217, 164, 65, 0.5);
+  border-radius: 999px; padding: var(--sp-1) var(--sp-3);
+  white-space: nowrap;
+}
+.hud__controls { display: flex; gap: var(--sp-2); }
+.hud-btn {
+  font: inherit; font-size: 0.85rem;
+  min-height: 44px; padding: var(--sp-1) var(--sp-3);
+  border-radius: 8px; cursor: pointer;
+  background: transparent; color: var(--c-text);
+  border: 1px solid rgba(233, 228, 214, 0.35);
+  text-decoration: none; display: inline-flex; align-items: center;
+}
+.hud-btn[aria-pressed="true"] { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.hud-btn--gold { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
+@media (max-width: 640px) {
+  .hud { flex-wrap: wrap; }
+  .hud__progress { order: 3; width: 100%; text-align: center; margin-inline: 0; }
+  .hud__controls { margin-left: auto; }
+  section { scroll-margin-top: 172px; }
+}
+
+/* ---------- кнопки ---------- */
+.btn {
+  display: inline-block; min-height: 48px;
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: 10px; text-decoration: none;
+  font-weight: 700; cursor: pointer; border: none; font-size: 1rem;
+  transition: transform 0.15s ease-out;
+}
+.btn:active { transform: scale(0.98); }
+.btn--gold { background: var(--gold); color: var(--ink); }
+.btn--ghost { background: transparent; color: var(--c-text); border: 1px solid rgba(233, 228, 214, 0.4); }
+.btn--big { font-size: 1.1rem; padding: var(--sp-4) var(--sp-6); }
+
+/* ---------- хаб ---------- */
+.world--hub {
+  min-height: 100svh;
+  display: grid; align-items: center;
+  padding: calc(64px + var(--sp-6)) 0 var(--sp-7);
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgba(217, 164, 65, 0.14), transparent 60%),
+    var(--c-bg);
+}
+.hub__inner { text-align: center; display: grid; gap: var(--sp-4); justify-items: center; }
+.hub__kicker { color: var(--c-dim); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.8rem; margin: 0; }
+.hub__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  margin: 0; color: var(--gold);
+}
+.hub__subtitle { max-width: 640px; margin: 0; font-size: 1.05rem; }
+.hub__facts { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-2); color: var(--c-dim); font-size: 0.95rem; }
+.hub__facts li::before { content: "◆ "; color: var(--gold); }
+
+.worlds { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); width: 100%; margin-top: var(--sp-3); }
+.world-card {
+  display: grid; gap: var(--sp-1);
+  padding: var(--sp-4);
+  border-radius: var(--radius);
+  background: rgba(233, 228, 214, 0.06);
+  border: 1px solid rgba(233, 228, 214, 0.18);
+  text-decoration: none; color: var(--c-text);
+  text-align: left; min-height: 44px;
+  transition: transform 0.15s ease-out, border-color 0.15s;
+}
+.world-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+.world-card__num { color: var(--c-dim); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.world-card__game { color: var(--gold); font-size: 0.85rem; }
+.world-card__title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
+.world-card__desc { color: var(--c-dim); font-size: 0.9rem; }
+
+/* ---------- общее для миров ---------- */
+.world { padding: var(--sp-7) 0; }
+.world__head { text-align: center; display: grid; gap: var(--sp-2); margin-bottom: var(--sp-6); }
+.world__kicker { color: var(--c-dim); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; margin: 0; }
+.world__title { font-family: var(--font-display); font-size: clamp(1.7rem, 4.5vw, 2.5rem); margin: 0; }
+.world__lead { max-width: 620px; margin: 0 auto; color: var(--c-dim); }
+
+/* почему так (режим дизайнера) */
+.why {
+  margin-top: var(--sp-5);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px dashed rgba(217, 164, 65, 0.6);
+  border-radius: var(--radius);
+  background: rgba(217, 164, 65, 0.07);
+  display: none;
+}
+.why strong { display: block; color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--sp-1); }
+.why p { margin: 0; font-size: 0.95rem; }
+body.designer .why { display: block; }
+
+/* ---------- мир 1: пергамент ---------- */
+.world--ereality {
+  background:
+    radial-gradient(900px 400px at 80% 0%, rgba(140, 106, 47, 0.18), transparent 60%),
+    linear-gradient(180deg, #1d1610, #171208);
+}
+.sheet {
+  max-width: 720px; margin-inline: auto;
+  background: var(--paper); color: var(--ink);
+  border-radius: var(--radius);
+  padding: var(--sp-5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  display: grid; gap: var(--sp-4);
+}
+.sheet__id { display: flex; gap: var(--sp-3); align-items: center; }
+.avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(145deg, #8c6a2f, #5d451a);
+  color: var(--paper); display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.sheet__class { margin: 0; font-family: var(--font-display); font-size: 1.3rem; }
+.sheet__level { margin: var(--sp-1) 0 0; color: #5a4c33; font-size: 0.95rem; }
+.sheet__subtitle { font-family: var(--font-display); margin: var(--sp-2) 0 0; color: #5d451a; }
+
+.stat { display: grid; gap: var(--sp-1); padding: var(--sp-2) 0; border-top: 1px solid rgba(93, 69, 26, 0.2); }
+.stat__head { display: flex; justify-content: space-between; gap: var(--sp-2); }
+.stat__name { font-weight: 700; }
+.stat__value { font-family: var(--font-display); color: #5d451a; }
+.stat__bar { height: 10px; border-radius: 999px; background: rgba(93, 69, 26, 0.18); overflow: hidden; }
+.stat__fill {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, #8c6a2f, #d9a441);
+  border-radius: 999px;
+  animation: fill 0.8s ease-out both;
+}
+@keyframes fill { from { width: 0; } }
+.stat__why { margin: 0; font-size: 0.9rem; color: #5a4c33; display: none; }
+body.designer .stat__why { display: block; }
+
+.quest { border: 1px solid rgba(93, 69, 26, 0.3); border-radius: 10px; overflow: hidden; }
+.quest__head {
+  width: 100%; display: flex; justify-content: space-between; align-items: center; gap: var(--sp-2);
+  background: transparent; border: none; cursor: pointer;
+  padding: var(--sp-3) var(--sp-4); min-height: 44px;
+  font: inherit; text-align: left; color: var(--ink);
+}
+.quest__head:hover { background: rgba(93, 69, 26, 0.08); }
+.quest__name { font-weight: 700; }
+.quest__tag { color: #5a4c33; font-size: 0.85rem; white-space: nowrap; }
+.quest__body { padding: 0 var(--sp-4) var(--sp-3); }
+.quest__text { margin: 0 0 var(--sp-2); }
+.quest__reward { margin: 0; color: #5d451a; font-weight: 700; font-size: 0.95rem; }
+.quest--open { background: rgba(217, 164, 65, 0.12); }
+
+.achievements { display: grid; gap: var(--sp-2); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.achv {
+  display: flex; gap: var(--sp-2); align-items: flex-start;
+  background: rgba(93, 69, 26, 0.1);
+  border-radius: 10px; padding: var(--sp-3);
+}
+.achv__icon { font-size: 1.4rem; }
+.achv__name { font-weight: 700; display: block; }
+.achv__desc { margin: var(--sp-1) 0 0; font-size: 0.88rem; color: #5a4c33; }
+
+/* ---------- мир 2: сочный match-3 ---------- */
+.world--tiles { background: linear-gradient(180deg, #fdf3e4, #f7e7cf); color: #3a2c1c; }
+.world--tiles .world__kicker, .world--tiles .world__lead { color: #6b573f; }
+.world--tiles .world__title { color: #8c5a24; }
+.matchlab { display: grid; gap: var(--sp-5); grid-template-columns: minmax(280px, 420px) 1fr; align-items: start; }
+@media (max-width: 760px) { .matchlab { grid-template-columns: 1fr; } }
+
+.board-wrap { display: grid; gap: var(--sp-2); }
+.board {
+  position: relative; width: 100%; aspect-ratio: 6 / 5;
+  background: rgba(58, 44, 28, 0.12);
+  border-radius: var(--radius);
+  border: 2px solid rgba(58, 44, 28, 0.35);
+  overflow: hidden;
+}
+.board__hint { margin: 0; font-size: 0.9rem; color: #6b573f; }
+
+.tile {
+  position: absolute;
+  width: calc(100% / 6); height: calc(100% / 5);
+  padding: 4px; border: none; background: transparent; cursor: pointer;
+  transition: left 0.18s ease-out, top 0.22s ease-out, transform 0.18s ease-out, opacity 0.2s;
+}
+.tile__face, .tile { border-radius: 10px; }
+.tile::before {
+  content: ""; position: absolute; inset: 4px; border-radius: 10px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+.tile::after {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: clamp(1rem, 4vw, 1.5rem); color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.tile--0::before { background: #d9534f; } .tile--0::after { content: "●"; }
+.tile--1::before { background: #4287c8; } .tile--1::after { content: "▲"; }
+.tile--2::before { background: #4fa356; } .tile--2::after { content: "■"; }
+.tile--3::before { background: #d9a441; } .tile--3::after { content: "◆"; }
+.tile--4::before { background: #8e5fb8; } .tile--4::after { content: "★"; }
+.tile--5::before { background: #3fa8a0; } .tile--5::after { content: "⬟"; }
+.tile--selected::before { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25), 0 0 0 3px #3a2c1c; }
+.tile--clearing { transform: scale(0.2); opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .tile { transition: none; }
+  .stat__fill { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+.chest { display: grid; gap: var(--sp-3); align-content: start; }
+.chest__title { margin: 0; font-family: var(--font-display); color: #8c5a24; }
+.chest__cards { display: grid; gap: var(--sp-2); }
+.tool-card {
+  display: flex; gap: var(--sp-3); align-items: flex-start;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(58, 44, 28, 0.25);
+  border-radius: 10px; padding: var(--sp-3);
+}
+.tool-card__lock {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: rgba(58, 44, 28, 0.15); color: #6b573f; font-weight: 700;
+}
+.tool-card__name { font-weight: 700; display: block; }
+.tool-card__desc { margin: var(--sp-1) 0 0; font-size: 0.92rem; color: #6b573f; }
+.tool-card:not(.tool-card--open) { opacity: 0.55; }
+.tool-card:not(.tool-card--open) .tool-card__desc { visibility: hidden; }
+.tool-card--open .tool-card__lock { background: #4fa356; color: #fff; }
+.tool-card--open { animation: pop 0.25s ease-out; }
+@keyframes pop { from { transform: scale(0.96); } }
+
+/* ---------- мир 3: зимняя ёлка ---------- */
+.world--tree {
+  background:
+    radial-gradient(1000px 500px at 50% 110%, rgba(217, 164, 65, 0.16), transparent 60%),
+    linear-gradient(180deg, #101d31, #0d1626);
+}
+.finale { display: grid; gap: var(--sp-6); grid-template-columns: minmax(280px, 380px) 1fr; align-items: center; }
+@media (max-width: 760px) { .finale { grid-template-columns: 1fr; } }
+
+.tree-wrap { position: relative; height: 420px; }
+.tree { position: absolute; inset: 0; }
+.tree__layer { position: absolute; left: 50%; translate: -50% 0; background: linear-gradient(180deg, #2e6b46, #1f4d31); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.tree__layer--1 { width: 55%; height: 34%; top: 8%; }
+.tree__layer--2 { width: 75%; height: 38%; top: 26%; }
+.tree__layer--3 { width: 95%; height: 44%; top: 46%; }
+.tree__trunk { position: absolute; left: 50%; translate: -50% 0; top: 88%; width: 12%; height: 10%; background: #5d451a; border-radius: 4px 4px 0 0; }
+.star {
+  position: absolute; left: 50%; top: 1%; translate: -50% 0;
+  font-size: 2rem; color: rgba(233, 228, 214, 0.35);
+  transition: color 0.4s, text-shadow 0.4s, transform 0.4s;
+  z-index: 1;
+}
+.star--lit { color: var(--gold); text-shadow: 0 0 24px rgba(217, 164, 65, 0.9); animation: starPop 0.6s ease-out; }
+@keyframes starPop { 40% { transform: scale(1.4); } }
+
+.ornaments { position: absolute; inset: 0; }
+.ornament {
+  position: absolute; display: grid; justify-items: center; gap: 2px;
+  text-decoration: none; color: var(--c-text); font-size: 0.75rem;
+  min-width: 64px; min-height: 44px; padding: var(--sp-1);
+  border-radius: 12px;
+}
+.ornament:nth-child(1) { left: 4%; top: 38%; }
+.ornament:nth-child(2) { right: 4%; top: 34%; }
+.ornament:nth-child(3) { left: 8%; top: 66%; }
+.ornament:nth-child(4) { right: 8%; top: 64%; }
+.ornament__icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.3rem; color: #fff;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), transparent 45%), var(--ball, #b8433a);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s ease-out;
+}
+.ornament:hover .ornament__icon { transform: scale(1.1); }
+.ornament:nth-child(2) .ornament__icon { --ball: #3f6fb8; }
+.ornament:nth-child(3) .ornament__icon { --ball: #4fa356; }
+.ornament:nth-child(4) .ornament__icon { --ball: #d9a441; }
+.ornament__value { color: var(--c-dim); font-size: 0.7rem; }
+
+.postcard { display: grid; gap: var(--sp-3); }
+.postcard__front {
+  justify-self: start; display: grid; gap: var(--sp-1); text-align: left;
+  background: var(--paper); color: var(--ink);
+  border: none; border-radius: var(--radius); cursor: pointer;
+  padding: var(--sp-4) var(--sp-5); min-height: 44px;
+  font: inherit; font-weight: 700; font-size: 1.05rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transform: rotate(-1deg);
+}
+.postcard__hint { font-weight: 400; font-size: 0.85rem; color: #5a4c33; }
+.postcard__body {
+  background: rgba(233, 228, 214, 0.08);
+  border: 1px solid rgba(233, 228, 214, 0.25);
+  border-radius: var(--radius); padding: var(--sp-4);
+  max-width: 520px;
+}
+.postcard__body p { margin: 0; }
+
+.guild { text-align: center; margin-top: var(--sp-6); display: grid; gap: var(--sp-2); justify-items: center; }
+.guild__note { color: var(--c-dim); font-size: 0.85rem; margin: 0; }
+.star-msg { text-align: center; color: var(--gold); font-family: var(--font-display); margin-top: var(--sp-4); }
+
+/* ---------- футер ---------- */
+.footer { padding: var(--sp-5) 0 var(--sp-6); text-align: center; color: var(--c-dim); font-size: 0.85rem; border-top: 1px solid rgba(233, 228, 214, 0.12); }
+
+/* ---------- печать ---------- */
+@media (max-width: 640px) {
+  .world--hub { padding-top: 208px; }
+}
+@media print {
+  body { background: #fff; color: #000; }
+  .hud, .board-wrap, .worlds, .star, .tree, .ornaments, .star-msg, .guild__note, .skip-link { display: none !important; }
+  .why, .stat__why { display: block !important; }
+  .quest__body { display: block !important; }
+  .world { padding: var(--sp-3) 0; }
+  .world--hub { min-height: auto; padding: var(--sp-3) 0; }
+  .sheet { box-shadow: none; border: 1px solid #999; }
+  .tool-card:not(.tool-card--open) { opacity: 1; }
+  .tool-card:not(.tool-card--open) .tool-card__desc { visibility: visible; }
+  .tool-card__lock { display: none; }
+  a { color: #000; text-decoration: none; }
+}
