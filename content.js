@@ -73,7 +73,7 @@ const CONTENT = {
       kicker: "Мир 2 · match-3 Tile Seasons / Match and Farm",
       title: "Сундук инструментов",
       lead: "Матч-3 — жанр студии, поэтому и стек я показываю её механикой. Собирай комбинации — каждая открытая карточка описывает инструмент и при чём он в команде.",
-      hint: "Меняй местами два соседних тайла: собери 3+ в ряд. Лимита ходов нет — прогресс гарантирован.",
+      hint: "Свайпай тайл на соседний или кликни два раза: собери 3+ в ряд. Лимита ходов нет, а если поле зашло в тупик — само перемешается.",
       chestTitle: "Сундук",
       tools: [
         { name: "C# / C++", desc: "Понимаю цену реализации фичи — говорю с разработкой на одном языке" },
@@ -85,6 +85,7 @@ const CONTENT = {
       ],
       allFound: "Сундук собран: 6/6",
       found: "Открыто {n}/6",
+      shuffled: "Поле перемешано — играем дальше",
       why: "Почему матч-3: это жанр Tile Seasons, но правила ослаблены — без лимита ходов и с гарантированным прогрессом. Резюме не должно быть сложнее работы: рекрутер должен получить контент, а не челлендж."
     },
     w3: {
@@ -184,7 +185,7 @@ const CONTENT = {
       kicker: "World 2 · match-3 Tile Seasons / Match and Farm",
       title: "Chest of Tools",
       lead: "Match-3 is the studio's genre, so I present my stack in its own mechanics. Combine tiles — each opened card describes a tool and what it brings to the team.",
-      hint: "Swap two adjacent tiles: line up 3+. No move limit — progress is guaranteed.",
+      hint: "Swipe a tile onto its neighbor or tap twice: line up 3+. No move limit, and if the board deadlocks it shuffles itself.",
       chestTitle: "Chest",
       tools: [
         { name: "C# / C++", desc: "I understand what a feature costs to build — we speak the same language" },
@@ -196,6 +197,7 @@ const CONTENT = {
       ],
       allFound: "Chest complete: 6/6",
       found: "Unlocked {n}/6",
+      shuffled: "Board shuffled — keep going",
       why: "Why match-3: it is Tile Seasons' genre, but the rules are softened — no move limit, guaranteed progress. A resume must not be harder than the job: the recruiter should get content, not a challenge."
     },
     w3: {

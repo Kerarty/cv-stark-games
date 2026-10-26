@@ -1,4 +1,5 @@
-/* Мини-движок матч-3 для мира Tile Seasons. Ноль зависимостей. */
+/* Мини-движок матч-3 для мира Tile Seasons. Ноль зависимостей.
+   Свайп мышью/пальцем + клик, каскады, гравитация, защита от тупиков. */
 (function () {
   "use strict";
 
@@ -8,14 +9,14 @@
   const SWAP_MS = 180;
   const CLEAR_MS = 240;
   const FALL_MS = 220;
+  const SHAKE_MS = 320;
+  const DRAG_THRESHOLD = 14;
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const wait = (ms) => sleep(reducedMotion ? 0 : ms);
 
-  function randType() {
-    return Math.floor(Math.random() * TYPES);
-  }
+  const randType = () => Math.floor(Math.random() * TYPES);
 
   function findMatches(board) {
     const matched = new Set();
@@ -23,7 +24,7 @@
     for (let r = 0; r < ROWS; r++) {
       let run = 1;
       for (let c = 1; c <= COLS; c++) {
-        const same = c < COLS && board[r][c] === board[r][c - 1] && board[r][c] !== null;
+        const same = c < COLS && board[r][c] !== null && board[r][c] === board[r][c - 1];
         if (same) run++;
         else {
           if (run >= 3) for (let k = c - run; k < c; k++) add(r, k);
@@ -34,7 +35,7 @@
     for (let c = 0; c < COLS; c++) {
       let run = 1;
       for (let r = 1; r <= ROWS; r++) {
-        const same = r < ROWS && board[r][c] === board[r - 1][c] && board[r][c] !== null;
+        const same = r < ROWS && board[r][c] !== null && board[r][c] === board[r - 1][c];
         if (same) run++;
         else {
           if (run >= 3) for (let k = r - run; k < r; k++) add(k, c);
@@ -45,14 +46,30 @@
     return matched;
   }
 
-  function initMatch3(boardEl, onMatchWave) {
+  function anyMoves(board) {
+    const trySwap = (r1, c1, r2, c2) => {
+      [board[r1][c1], board[r2][c2]] = [board[r2][c2], board[r1][c1]];
+      const ok = findMatches(board).size > 0;
+      [board[r1][c1], board[r2][c2]] = [board[r2][c2], board[r1][c1]];
+      return ok;
+    };
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (c + 1 < COLS && trySwap(r, c, r, c + 1)) return true;
+        if (r + 1 < ROWS && trySwap(r, c, r + 1, c)) return true;
+      }
+    }
+    return false;
+  }
+
+  function initMatch3(boardEl, onMatchWave, onShuffle) {
     let board = [];
     let selected = null;
     let busy = false;
-    let finished = false;
+    let gesture = null; // { r, c, x, y, done }
 
     const tileId = (r, c) => `t${r}-${c}`;
-    const tileAt = new Map(); // key -> element
+    const tileAt = new Map();
 
     function pos(el, r, c) {
       el.style.left = (c * 100) / COLS + "%";
@@ -64,27 +81,44 @@
       el.type = "button";
       el.className = "tile tile--" + type;
       el.dataset.type = type;
+      el.dataset.r = r;
+      el.dataset.c = c;
       el.setAttribute("aria-label", "tile " + (type + 1));
       pos(el, r, c);
-      el.addEventListener("click", () => onTileClick(r, c));
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onTileClick(r, c);
+        }
+      });
       return el;
     }
 
-    function newBoard() {
-      board = [];
+    /* Заполнение без стартовых матчей и обязательно с доступным ходом. */
+    function randomFill() {
+      const b = [];
       for (let r = 0; r < ROWS; r++) {
-        board[r] = [];
+        b[r] = [];
         for (let c = 0; c < COLS; c++) {
           let t;
           do {
             t = randType();
           } while (
-            (c >= 2 && board[r][c - 1] === t && board[r][c - 2] === t) ||
-            (r >= 2 && board[r - 1][c] === t && board[r - 2][c] === t)
+            (c >= 2 && b[r][c - 1] === t && b[r][c - 2] === t) ||
+            (r >= 2 && b[r - 1][c] === t && b[r - 2][c] === t)
           );
-          board[r][c] = t;
+          b[r][c] = t;
         }
       }
+      return b;
+    }
+
+    function ensurePlayable() {
+      for (let i = 0; i < 300; i++) {
+        const b = randomFill();
+        if (anyMoves(b)) return b;
+      }
+      return randomFill();
     }
 
     function render() {
@@ -111,6 +145,15 @@
     function selectVisual(r, c, on) {
       const el = tileAt.get(tileId(r, c));
       if (el) el.classList.toggle("tile--selected", on);
+    }
+
+    function shakeTiles(a, b) {
+      for (const [r, c] of [a, b]) {
+        const el = tileAt.get(tileId(r, c));
+        if (!el) continue;
+        el.classList.add("tile--denied");
+        setTimeout(() => el.classList.remove("tile--denied"), SHAKE_MS);
+      }
     }
 
     async function swapTiles(a, b) {
@@ -172,16 +215,26 @@
     }
 
     async function attemptSwap(a, b) {
+      if (busy) return;
       busy = true;
-      selectVisual(a[0], a[1], false);
+      if (selected) {
+        selectVisual(selected[0], selected[1], false);
+        selected = null;
+      }
       await swapTiles(a, b);
       [board[a[0]][a[1]], board[b[0]][b[1]]] = [board[b[0]][b[1]], board[a[0]][a[1]]];
       if (findMatches(board).size === 0) {
         await swapTiles(a, b);
         [board[a[0]][a[1]], board[b[0]][b[1]]] = [board[b[0]][b[1]], board[a[0]][a[1]]];
+        shakeTiles(a, b);
       } else {
-        const waves = await resolveWaves();
-        if (typeof onMatchWave === "function") onMatchWave(waves);
+        await resolveWaves();
+        if (typeof onMatchWave === "function") onMatchWave();
+        if (!anyMoves(board)) {
+          board = ensurePlayable();
+          render();
+          if (typeof onShuffle === "function") onShuffle();
+        }
       }
       busy = false;
     }
@@ -209,7 +262,42 @@
       }
     }
 
-    newBoard();
+    /* Свайп: pointerdown на тайле → тянуть → отпустить на соседнем. */
+    boardEl.addEventListener("pointerdown", (e) => {
+      const tile = e.target.closest(".tile");
+      if (!tile || busy) return;
+      gesture = {
+        r: Number(tile.dataset.r),
+        c: Number(tile.dataset.c),
+        x: e.clientX,
+        y: e.clientY,
+        done: false,
+      };
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      if (!gesture || gesture.done || busy) return;
+      const dx = e.clientX - gesture.x;
+      const dy = e.clientY - gesture.y;
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      gesture.done = true;
+      let tr = gesture.r;
+      let tc = gesture.c;
+      if (Math.abs(dx) > Math.abs(dy)) tc += dx > 0 ? 1 : -1;
+      else tr += dy > 0 ? 1 : -1;
+      if (tr >= 0 && tr < ROWS && tc >= 0 && tc < COLS) {
+        attemptSwap([gesture.r, gesture.c], [tr, tc]);
+      }
+    });
+
+    window.addEventListener("pointerup", () => {
+      if (!gesture) return;
+      const g = gesture;
+      gesture = null;
+      if (!g.done && !busy) onTileClick(g.r, g.c);
+    });
+
+    board = ensurePlayable();
     render();
   }
 
