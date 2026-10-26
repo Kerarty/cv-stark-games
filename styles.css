@@ -225,6 +225,7 @@ body.designer .stat__why { display: block; }
   border-radius: var(--radius);
   border: 2px solid rgba(58, 44, 28, 0.35);
   overflow: hidden;
+  touch-action: none;
 }
 .board__hint { margin: 0; font-size: 0.9rem; color: #6b573f; }
 
@@ -252,9 +253,23 @@ body.designer .stat__why { display: block; }
 .tile--5::before { background: #3fa8a0; } .tile--5::after { content: "⬟"; }
 .tile--selected::before { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25), 0 0 0 3px #3a2c1c; }
 .tile--clearing { transform: scale(0.2); opacity: 0; }
+.tile--denied { animation: deny 0.32s ease-out; }
+@keyframes deny { 25% { translate: -6px 0; } 50% { translate: 5px 0; } 75% { translate: -3px 0; } }
+
+.board__note {
+  position: absolute; left: 50%; bottom: 10px; translate: -50% 0;
+  background: rgba(58, 44, 28, 0.85); color: #fff;
+  font-size: 0.85rem; padding: var(--sp-1) var(--sp-3);
+  border-radius: 999px; white-space: nowrap;
+  opacity: 0; pointer-events: none; z-index: 5;
+  transition: opacity 0.25s ease-out;
+}
+.board__note--show { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .tile { transition: none; }
+  .tile--denied, .board__note { transition: none; animation: none; }
   .stat__fill { animation: none; }
+  .sky-star, .bulb, .garland, .star, .star--lit, .flake { animation: none; }
   html { scroll-behavior: auto; }
 }
 
@@ -280,7 +295,7 @@ body.designer .stat__why { display: block; }
 .tool-card--open { animation: pop 0.25s ease-out; }
 @keyframes pop { from { transform: scale(0.96); } }
 
-/* ---------- мир 3: зимняя ёлка ---------- */
+/* ---------- мир 3: зимняя диорама ---------- */
 .world--tree {
   background:
     radial-gradient(1000px 500px at 50% 110%, rgba(217, 164, 65, 0.16), transparent 60%),
@@ -289,45 +304,167 @@ body.designer .stat__why { display: block; }
 .finale { display: grid; gap: var(--sp-6); grid-template-columns: minmax(280px, 380px) 1fr; align-items: center; }
 @media (max-width: 760px) { .finale { grid-template-columns: 1fr; } }
 
-.tree-wrap { position: relative; height: 420px; }
-.tree { position: absolute; inset: 0; }
-.tree__layer { position: absolute; left: 50%; translate: -50% 0; background: linear-gradient(180deg, #2e6b46, #1f4d31); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.tree__layer--1 { width: 55%; height: 34%; top: 8%; }
-.tree__layer--2 { width: 75%; height: 38%; top: 26%; }
-.tree__layer--3 { width: 95%; height: 44%; top: 46%; }
-.tree__trunk { position: absolute; left: 50%; translate: -50% 0; top: 88%; width: 12%; height: 10%; background: #5d451a; border-radius: 4px 4px 0 0; }
-.star {
-  position: absolute; left: 50%; top: 1%; translate: -50% 0;
-  font-size: 2rem; color: rgba(233, 228, 214, 0.35);
-  transition: color 0.4s, text-shadow 0.4s, transform 0.4s;
-  z-index: 1;
+.tree-wrap {
+  position: relative; height: 480px;
+  border-radius: 16px; overflow: hidden;
+  background: linear-gradient(180deg, #0b1730 0%, #122a4e 55%, #1c3d63 100%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(233, 228, 214, 0.08);
 }
-.star--lit { color: var(--gold); text-shadow: 0 0 24px rgba(217, 164, 65, 0.9); animation: starPop 0.6s ease-out; }
-@keyframes starPop { 40% { transform: scale(1.4); } }
 
-.ornaments { position: absolute; inset: 0; }
+/* небо */
+.sky { position: absolute; inset: 0; z-index: 0; }
+.sky-star {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 2px; height: 2px; border-radius: 50%;
+  background: #fff; opacity: 0.6;
+  animation: twinkle var(--d, 2.4s) ease-in-out infinite alternate;
+}
+.moon {
+  position: absolute; top: 7%; right: 9%;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffdf2, #eae4cc 65%, #d9d3b6);
+  box-shadow: 0 0 26px rgba(255, 250, 220, 0.4), inset -7px -5px 0 rgba(0, 0, 0, 0.07);
+}
+@keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.95; } }
+
+/* ель */
+.tree { position: absolute; inset: 0; z-index: 1; }
+.tree__layer {
+  position: absolute; left: 50%; translate: -50% 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(240, 248, 255, 0.95) 0 11%, rgba(240, 248, 255, 0) 11%),
+    linear-gradient(105deg, rgba(255, 255, 255, 0.10) 0 18%, rgba(255, 255, 255, 0) 45% 70%, rgba(0, 0, 0, 0.24) 100%),
+    linear-gradient(180deg, #2f7a4e, #17492e);
+}
+.tree__layer--1 { width: 56%; height: 32%; top: 12%; }
+.tree__layer--2 { width: 76%; height: 36%; top: 27%; }
+.tree__layer--3 { width: 96%; height: 42%; top: 44%; }
+.tree__trunk {
+  position: absolute; left: 50%; translate: -50% 0; top: 85%;
+  width: 11%; height: 9%;
+  background: linear-gradient(90deg, #4a3013, #6b4a26 45%, #3c2710);
+  border-radius: 4px 4px 0 0;
+}
+
+/* гирлянды */
+.garland {
+  position: absolute; left: 50%; translate: -50% 0;
+  border: 3px dotted transparent;
+  border-bottom-color: rgba(255, 215, 106, 0.9);
+  border-radius: 50%;
+  animation: garlandGlow 2.4s ease-in-out infinite alternate;
+}
+.garland--1 { width: 40%; height: 24%; top: 24%; }
+.garland--2 { width: 56%; height: 28%; top: 42%; }
+.garland--3 { width: 72%; height: 30%; top: 60%; }
+@keyframes garlandGlow {
+  from { filter: drop-shadow(0 0 3px rgba(255, 215, 106, 0.35)); }
+  to { filter: drop-shadow(0 0 9px rgba(255, 215, 106, 0.8)); }
+}
+
+/* лампочки */
+.tree-lights { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.bulb {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c, #ffd76a);
+  box-shadow: 0 0 8px var(--c, #ffd76a);
+  animation: blink 1.8s ease-in-out var(--bd, 0s) infinite alternate;
+}
+@keyframes blink { from { opacity: 0.45; } to { opacity: 1; } }
+
+/* звезда */
+.star {
+  position: absolute; left: 50%; top: 2.5%; translate: -50% 0;
+  font-size: 2.6rem; color: rgba(233, 228, 214, 0.3);
+  z-index: 3;
+  transition: color 0.4s, text-shadow 0.4s;
+  animation: starIdle 3s ease-in-out infinite alternate;
+}
+@keyframes starIdle {
+  from { filter: drop-shadow(0 0 4px rgba(217, 164, 65, 0.2)); }
+  to { filter: drop-shadow(0 0 10px rgba(217, 164, 65, 0.45)); }
+}
+.star--lit {
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(217, 164, 65, 0.95), 0 0 42px rgba(217, 164, 65, 0.6);
+  animation: starPop 0.6s ease-out, starGlow 2.2s ease-in-out 0.6s infinite alternate;
+}
+@keyframes starPop { 40% { transform: scale(1.35); } }
+@keyframes starGlow {
+  from { text-shadow: 0 0 14px rgba(217, 164, 65, 0.8), 0 0 30px rgba(217, 164, 65, 0.45); }
+  to { text-shadow: 0 0 22px rgba(217, 164, 65, 1), 0 0 52px rgba(217, 164, 65, 0.7); }
+}
+
+/* контакты-шары */
+.ornaments { position: absolute; inset: 0; z-index: 4; }
 .ornament {
   position: absolute; display: grid; justify-items: center; gap: 2px;
   text-decoration: none; color: var(--c-text); font-size: 0.75rem;
   min-width: 64px; min-height: 44px; padding: var(--sp-1);
   border-radius: 12px;
 }
-.ornament:nth-child(1) { left: 4%; top: 38%; }
-.ornament:nth-child(2) { right: 4%; top: 34%; }
-.ornament:nth-child(3) { left: 8%; top: 66%; }
-.ornament:nth-child(4) { right: 8%; top: 64%; }
+.ornament::before {
+  content: ""; position: absolute; top: -24px; left: calc(50% - 0.75px);
+  width: 1.5px; height: 26px;
+  background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.45));
+}
+.ornament:nth-child(1) { left: 5%; top: 36%; }
+.ornament:nth-child(2) { right: 5%; top: 32%; }
+.ornament:nth-child(3) { left: 9%; top: 62%; }
+.ornament:nth-child(4) { right: 9%; top: 60%; }
 .ornament__icon {
+  position: relative;
   width: 52px; height: 52px; border-radius: 50%;
   display: grid; place-items: center; font-size: 1.3rem; color: #fff;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), transparent 45%), var(--ball, #b8433a);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 -4px 8px rgba(0, 0, 0, 0.25);
   transition: transform 0.15s ease-out;
+}
+.ornament__icon::after {
+  content: ""; position: absolute; top: -5px; left: 50%; translate: -50% 0;
+  width: 10px; height: 5px; border-radius: 2px 2px 0 0;
+  background: #b99245;
 }
 .ornament:hover .ornament__icon { transform: scale(1.1); }
 .ornament:nth-child(2) .ornament__icon { --ball: #3f6fb8; }
 .ornament:nth-child(3) .ornament__icon { --ball: #4fa356; }
 .ornament:nth-child(4) .ornament__icon { --ball: #d9a441; }
 .ornament__value { color: var(--c-dim); font-size: 0.7rem; }
+
+/* подарки и сугроб */
+.gifts { position: absolute; left: 50%; translate: -50% 0; bottom: 10px; width: 64%; height: 44px; z-index: 3; }
+.gift { position: absolute; bottom: 0; border-radius: 4px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35); }
+.gift::before {
+  content: ""; position: absolute; left: 50%; translate: -50% 0;
+  top: 0; bottom: 0; width: 6px; background: #ffd76a;
+}
+.gift::after {
+  content: ""; position: absolute; top: -6px; left: calc(50% - 8px);
+  width: 7px; height: 7px; border-radius: 50% 50% 0 0;
+  background: #ffd76a; box-shadow: 8px 0 0 #ffd76a;
+}
+.gift--1 { left: 8%; width: 40px; height: 32px; background: linear-gradient(180deg, #c94f4f, #a03a3a); }
+.gift--2 { left: 44%; width: 30px; height: 24px; background: linear-gradient(180deg, #4f7ec9, #3a5fa0); }
+.gift--3 { left: 68%; width: 36px; height: 28px; background: linear-gradient(180deg, #4fa356, #3a7d42); }
+.snowdrift {
+  position: absolute; left: -6%; right: -6%; bottom: -16px; height: 64px; z-index: 2;
+  background:
+    radial-gradient(42% 90% at 22% 100%, #eaf3ff 60%, transparent 61%),
+    radial-gradient(50% 100% at 68% 100%, #dfeaff 62%, transparent 63%),
+    radial-gradient(70% 110% at 50% 120%, #f4f9ff 60%, transparent 61%);
+}
+
+/* снегопад */
+.snowfield { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.flake {
+  position: absolute; left: var(--x); top: -10px;
+  width: calc(5px * var(--s, 1)); height: calc(5px * var(--s, 1));
+  border-radius: 50%; background: #fff; opacity: 0.75;
+  animation: snowfall var(--d, 9s) linear var(--t, 0s) infinite;
+}
+@keyframes snowfall { to { transform: translate(var(--w, -24px), 540px); } }
 
 .postcard { display: grid; gap: var(--sp-3); }
 .postcard__front {

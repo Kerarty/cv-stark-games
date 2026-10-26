@@ -151,6 +151,58 @@
     updateChestCounter();
   }
 
+  function onShuffle() {
+    const board = $("#matchBoard");
+    if (!board) return;
+    let note = $(".board__note");
+    if (!note) {
+      note = el("div", "board__note");
+      board.appendChild(note);
+    }
+    note.textContent = t("w2.shuffled");
+    note.classList.add("board__note--show");
+    setTimeout(() => note.classList.remove("board__note--show"), 1800);
+  }
+
+  /* ---------- украшения ёлки: звёзды, снег, лампочки ---------- */
+  function initTreeDecor() {
+    const sky = $(".sky");
+    if (sky) {
+      for (let i = 0; i < 10; i++) {
+        const s = el("span", "sky-star");
+        s.style.setProperty("--x", 4 + Math.random() * 92 + "%");
+        s.style.setProperty("--y", 4 + Math.random() * 42 + "%");
+        s.style.setProperty("--d", 1.8 + Math.random() * 2.6 + "s");
+        s.style.setProperty("--s", 0.5 + Math.random());
+        sky.appendChild(s);
+      }
+    }
+    const snow = $(".snowfield");
+    if (snow) {
+      for (let i = 0; i < 28; i++) {
+        const f = el("span", "flake");
+        f.style.setProperty("--x", Math.random() * 100 + "%");
+        f.style.setProperty("--d", 6 + Math.random() * 8 + "s");
+        f.style.setProperty("--t", -12 * Math.random() + "s");
+        f.style.setProperty("--s", 0.5 + Math.random() * 1.2);
+        f.style.setProperty("--w", Math.random() * 60 - 30 + "px");
+        snow.appendChild(f);
+      }
+    }
+    const lights = $("#treeLights");
+    if (lights) {
+      const colors = ["#ff6b6b", "#ffd76a", "#6bd5ff", "#8dff9e", "#ff9de2"];
+      for (let i = 0; i < 16; i++) {
+        const bulb = el("span", "bulb");
+        bulb.style.setProperty("--x", 20 + Math.random() * 60 + "%");
+        bulb.style.setProperty("--y", 10 + Math.random() * 74 + "%");
+        bulb.style.setProperty("--c", colors[i % colors.length]);
+        bulb.style.setProperty("--bd", Math.random() * 2 + "s");
+        lights.appendChild(bulb);
+      }
+    }
+  }
+
   /* ---------- мир 3: ёлка ---------- */
   function renderW3() {
     const d = CONTENT[lang].w3;
@@ -282,5 +334,6 @@
   bindToggles();
   bindPostcard();
   watchWorlds();
-  if (window.initMatch3) window.initMatch3($("#matchBoard"), onMatchWave);
+  initTreeDecor();
+  if (window.initMatch3) window.initMatch3($("#matchBoard"), onMatchWave, onShuffle);
 })();
