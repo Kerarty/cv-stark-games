@@ -74,6 +74,17 @@
     function pos(el, r, c) {
       el.style.left = (c * 100) / COLS + "%";
       el.style.top = (r * 100) / ROWS + "%";
+      el.dataset.r = r;
+      el.dataset.c = c;
+    }
+
+    /* Позицию тайла читаем из его фактического стиля — dataset
+       и замыкания устаревают после свапа и каскадов, стиль нет. */
+    function cellOf(el) {
+      return {
+        r: Math.round(parseFloat(el.style.top) / (100 / ROWS)),
+        c: Math.round(parseFloat(el.style.left) / (100 / COLS)),
+      };
     }
 
     function makeTile(type, r, c) {
@@ -81,16 +92,8 @@
       el.type = "button";
       el.className = "tile tile--" + type;
       el.dataset.type = type;
-      el.dataset.r = r;
-      el.dataset.c = c;
       el.setAttribute("aria-label", "tile " + (type + 1));
       pos(el, r, c);
-      el.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onTileClick(r, c);
-        }
-      });
       return el;
     }
 
@@ -216,6 +219,7 @@
 
     async function attemptSwap(a, b) {
       if (busy) return;
+      if (!tileAt.get(tileId(a[0], a[1])) || !tileAt.get(tileId(b[0], b[1]))) return;
       busy = true;
       if (selected) {
         selectVisual(selected[0], selected[1], false);
@@ -266,13 +270,18 @@
     boardEl.addEventListener("pointerdown", (e) => {
       const tile = e.target.closest(".tile");
       if (!tile || busy) return;
-      gesture = {
-        r: Number(tile.dataset.r),
-        c: Number(tile.dataset.c),
-        x: e.clientX,
-        y: e.clientY,
-        done: false,
-      };
+      const { r, c } = cellOf(tile);
+      gesture = { r, c, x: e.clientX, y: e.clientY, done: false };
+    });
+
+    /* Клавиатура: Enter/пробел на тайле — то же, что клик. */
+    boardEl.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const tile = e.target.closest(".tile");
+      if (!tile) return;
+      e.preventDefault();
+      const { r, c } = cellOf(tile);
+      onTileClick(r, c);
     });
 
     window.addEventListener("pointermove", (e) => {
