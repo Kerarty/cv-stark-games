@@ -486,7 +486,6 @@ body.designer .stat__why { display: block; }
 .postcard__body p { margin: 0; }
 
 .guild { text-align: center; margin-top: var(--sp-6); display: grid; gap: var(--sp-2); justify-items: center; }
-.guild__buttons { display: flex; gap: var(--sp-3); flex-wrap: wrap; justify-content: center; }
 .guild__note { color: var(--c-dim); font-size: 0.85rem; margin: 0; }
 .star-msg { text-align: center; color: var(--gold); font-family: var(--font-display); margin-top: var(--sp-4); }
 

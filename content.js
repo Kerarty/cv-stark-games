@@ -95,9 +95,8 @@ const CONTENT = {
       cardTitle: "Открытка: почему Stark Games",
       cardHint: "нажми, чтобы открыть",
       cardText: "Студия 20+ лет делает игры, в которые возвращаются: браузерная MMORPG, match-3, сезонные события. Мне близок этот фокус — не разовый вау-эффект, а контент и экономика, которые держат игрока месяцами. Мой цикл совпадает с вашим: гипотеза → прототип → плейтест → баланс по данным. Хочу проектировать события и баланс для миллионов игроков — и расти в команде, которая умеет это лучше всех.",
-      cta: "Отправить резюме в гильдию",
       contact: "Связаться со мной",
-      ctaNote: "Письмо уйдёт на hr@stark.games — откроется почтовый клиент.",
+      ctaNote: "Напишет письмо на kukar.yar@gmail.com — откроется почтовый клиент.",
       ornaments: [
         { kind: "tel", icon: "☎", label: "Позвонить", value: "+375 44 783-84-89" },
         { kind: "mail", icon: "✉", label: "Написать", value: "kukar.yar@gmail.com" },
@@ -208,9 +207,8 @@ const CONTENT = {
       cardTitle: "Postcard: why Stark Games",
       cardHint: "tap to open",
       cardText: "For 20+ years the studio has made games people return to: a browser MMO, a match-3, seasonal events. That focus is close to me — not a one-time wow, but content and economy that keep a player for months. My loop matches yours: hypothesis → prototype → playtest → data-driven balance. I want to design events and balance for millions of players — and grow in a team that does it best.",
-      cta: "Send my resume to the guild",
       contact: "Contact me",
-      ctaNote: "The mail goes to hr@stark.games — your mail client will open.",
+      ctaNote: "Opens your mail client addressed to kukar.yar@gmail.com.",
       ornaments: [
         { kind: "tel", icon: "☎", label: "Call", value: "+375 44 783-84-89" },
         { kind: "mail", icon: "✉", label: "Email", value: "kukar.yar@gmail.com" },

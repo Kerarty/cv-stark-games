@@ -235,14 +235,6 @@
     $("#postcardBody").hidden = true;
     $("#postcardBtn").setAttribute("aria-expanded", "false");
 
-    const mail = $("#guildMail");
-    const subject =
-      lang === "ru"
-        ? "Резюме: геймдизайнер Ярослав Кукар"
-        : "Resume: game designer Yaraslau Kukar";
-    mail.href =
-      "mailto:hr@stark.games?subject=" + encodeURIComponent(subject);
-
     setWhy("#tree", d.why);
   }
 
